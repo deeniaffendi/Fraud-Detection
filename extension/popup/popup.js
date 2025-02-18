@@ -22,13 +22,8 @@ const getURL = () => {
   });
 };
 
-// Check button event
-checkSafetyElement.onclick = async () => {
-  console.log("Button clicked");
-
-  // Hide the button while loading
-  hideElement(checkSafetyElement);
-
+// Function to fetch URL and send request to background
+const fetchAndProcessURL = async () => {
   try {
     const url = await getURL(); // Get current tab URL
     console.log("URL fetched:", url);
@@ -52,4 +47,43 @@ checkSafetyElement.onclick = async () => {
   } catch (err) {
     tajukElement.innerText = "Error fetching URL.";
   }
+};
+
+// Listens for messages sent
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  // Get Content 
+  let pageText = request.pageText;
+  console.log("Scraped URL:", request.url);
+  console.log("Scraped Text:\n", request.pageText);
+})
+
+// Function to scrape content from page
+function scrapeContentFromPage(){
+  
+  //Parse contents from the HTML page
+  let pageText = document.body.innerText;
+  let currentURL = window.location.href;
+
+  // Send content
+  chrome.runtime.sendMessage({pageText, url: currentURL});
+}
+
+//Button event
+checkSafetyElement.onclick = async() => {
+  console.log("Button clicked");
+
+  // Hide the button while loading
+  hideElement(checkSafetyElement);
+
+  // Call the function to fetch and process the URL
+  // fetchAndProcessURL();
+
+  // Get current active tab
+  let [tab] = await chrome.tabs.query({active: true, currentWindow: true})
+
+  // Execute script to parse emails on page
+  chrome.scripting.executeScript({
+    target: {tabId: tab.id},
+    func: scrapeContentFromPage,
+  })
 };
