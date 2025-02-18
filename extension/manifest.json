@@ -1,0 +1,20 @@
+{
+    "manifest_version": 3,
+    "name": "Check Site's Legitimacy",
+    "version": "1.0",
+    "action":{
+        "default_popup": "popup/popup.html"
+    },
+    "icons":{
+        "16":"images/icon-16.jpg"
+    },
+    "background":{
+        "service_worker": "background.js"
+    },
+    "permissions":[
+        "storage",
+        "tabs",
+        "activeTab",
+        "scripting"
+    ]
+}
