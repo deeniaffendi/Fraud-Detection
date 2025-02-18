@@ -1,4 +1,0 @@
-Phishing: The URL is flagged as attempting to deceive users, usually through fraudulent websites designed to steal sensitive information (like login credentials).
-Clean: The URL is considered safe, with no malicious or suspicious behavior detected.
-Malware: The URL is flagged for distributing or hosting malicious software (malware).
-Unrated: The URL has not been rated or classified by the engine yet, so no specific judgment can be made.
