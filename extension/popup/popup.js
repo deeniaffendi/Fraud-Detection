@@ -76,7 +76,7 @@ checkSafetyElement.onclick = async() => {
   hideElement(checkSafetyElement);
 
   // Call the function to fetch and process the URL
-  // fetchAndProcessURL();
+  fetchAndProcessURL();
 
   // Get current active tab
   let [tab] = await chrome.tabs.query({active: true, currentWindow: true})
