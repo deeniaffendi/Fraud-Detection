@@ -57,6 +57,9 @@ def scan():
     try:
         data = request.json
         url = data.get("url")
+        text = data.get("pageText")
+
+        print(text)
 
         if not url:
             return jsonify({"error": "URL is required"}), 400

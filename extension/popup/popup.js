@@ -22,40 +22,58 @@ const getURL = () => {
   });
 };
 
-// Function to fetch URL and send request to background
 const fetchAndProcessURL = async () => {
   try {
     const url = await getURL(); // Get current tab URL
     console.log("URL fetched:", url);
 
-    // Send the URL to the background script
-    chrome.runtime.sendMessage({ type: 'checkSafety', url: url }, (response) => {
-      console.log("Response from background:", response);
+    // Inject script into the active tab to extract text
+    chrome.scripting.executeScript(
+      {
+        target: { tabId: (await getCurrentTab()).id },
+        func: () => document.body.innerText, // Fetch webpage text
+      },
+      (injectionResults) => {
+        if (chrome.runtime.lastError) {
+          console.error(chrome.runtime.lastError);
+          tajukElement.innerText = "Error extracting text.";
+          return;
+        }
 
-      if (response.error) {
-        tajukElement.innerText = "Error: " + response.error;
-      } else {
-        // Display the message from the response
-        tajukElement.innerText = response.data.message || "Scan Completed!";
+        const pageText = injectionResults[0].result; // Extract text content
+        console.log("Extracted text:", pageText);
+
+        // Send URL and page text to the background script
+        chrome.runtime.sendMessage(
+          { type: "checkSafety", url: url, pageText: pageText },
+          (response) => {
+            console.log("Response from background:", response);
+
+            if (response.error) {
+              tajukElement.innerText = "Error: " + response.error;
+            } else {
+              tajukElement.innerText = response.data.message || "Scan Completed!";
+            }
+
+            // Re-enable the button after response
+            checkSafetyElement.disabled = false;
+            checkSafetyElement.innerText = "Check Again";
+            showElement(checkSafetyElement);
+          }
+        );
       }
-
-      // Re-enable the button after the response
-      checkSafetyElement.disabled = false;
-      checkSafetyElement.innerText = "Check Again";  // Optionally change button text
-      showElement(checkSafetyElement);  // Show the button again
-    });
+    );
   } catch (err) {
     tajukElement.innerText = "Error fetching URL.";
   }
 };
 
-// Listens for messages sent
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  // Get Content 
-  let pageText = request.pageText;
-  console.log("Scraped URL:", request.url);
-  console.log("Scraped Text:\n", request.pageText);
-})
+// Helper function to get current tab
+const getCurrentTab = async () => {
+  let queryOptions = { active: true, currentWindow: true };
+  let [tab] = await chrome.tabs.query(queryOptions);
+  return tab;
+};
 
 // Function to scrape content from page
 function scrapeContentFromPage(){
@@ -65,7 +83,7 @@ function scrapeContentFromPage(){
   let currentURL = window.location.href;
 
   // Send content
-  chrome.runtime.sendMessage({pageText, url: currentURL});
+  chrome.runtime.sendMessage({type: "scrapedData", pageText, url: currentURL});
 }
 
 //Button event
