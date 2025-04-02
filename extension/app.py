@@ -16,9 +16,9 @@ api_key = "f3d96da5d258d0b8f0c6e699e73e4268f626a5749fea1e8ea763612394fb71a7"
 url_scan = "https://www.virustotal.com/api/v3/urls"
 url_analysis = "https://www.virustotal.com/api/v3/analyses"
 
-clf = joblib.load("model.pkl")
-vectorizer = joblib.load("vectorizer.pkl")
-label_encoder = joblib.load("label_encoder.pkl")
+clf = joblib.load("model/model.pkl")
+vectorizer = joblib.load("model/vectorizer.pkl")
+label_encoder = joblib.load("model/label_encoder.pkl")
 
 # Function to scan a URL using VirusTotal API
 def scan_url(url):
@@ -52,7 +52,6 @@ def report_result(scan_result, url):
 
     analysis_results = analysis_result.get('data', {}).get('attributes', {}).get('results', {})
 
-    # Initialize dictionaries to count occurrences of categories and results
     category_counts = {}
     result_counts = {}
     flagged_results = []
@@ -84,7 +83,7 @@ def report_result(scan_result, url):
 
 # Function to get analysis using the ID returned from the scan
 def get_analysis(id):
-    print(f"Fetching analysis for ID: {id}")  # Debugging log for fetching the analysis
+    print(f"Fetching analysis for ID: {id}") 
 
     headers = {
         "x-apikey": api_key
@@ -113,7 +112,7 @@ def predict(content):
 
     decision_predicted_class = label_encoder.inverse_transform(decision_prediction)
 
-    return f"Prediction for: '{content}' -> {decision_predicted_class[0]}"
+    return decision_predicted_class[0]
 
 @app.route('/scan', methods=['POST'])
 def scan():

@@ -1,6 +1,5 @@
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === "checkSafety") {
-
       // Make the fetch request to your Flask server here
       fetch("http://127.0.0.1:5000/scan", {
           method: "POST",

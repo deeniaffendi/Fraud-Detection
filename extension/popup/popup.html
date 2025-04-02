@@ -3,13 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Check Site's Legitimacy</title>
     <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
     <div class="container m=3">
+        <img src="../images/logo.png" id="logo">
         <p id="tajuk">Are you sure this website is safe?</p>
-        <button id="checkSafety" class="button is-success is-fullwidth m-4">Check Site Safety</button>
+        <button id="checkSafety" class="button">Check Site Safety</button>
+        
+        <div id="loadingContainer" class="loading-container" style="display: none;">
+            <div id="loadingBar" class="loading-bar"></div>
+        </div>
     </div> 
 
 </body>

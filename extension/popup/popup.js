@@ -1,15 +1,31 @@
 const checkSafetyElement = document.getElementById("checkSafety");
 const tajukElement = document.getElementById("tajuk");
+const containerElement = document.querySelector(".container");
+const imageElement = document.getElementById("logo"); 
+const loadingContainer = document.getElementById("loadingContainer"); // Added for the loading container
+const loadingBar = document.getElementById("loadingBar");
+
+const showLoadingBar = () => {
+  loadingContainer.style.display = 'block'; // Show the loading bar container
+  loadingBar.style.width = '0%'; // Reset the width before starting
+};
+
+const updateLoadingBar = (progress) => {
+  loadingBar.style.width = `${progress}%`; // Update the loading bar width
+};
+
+const hideLoadingBar = () => {
+  loadingContainer.style.display = 'none'; // Hide the loading bar when done
+};
 
 const hideElement = (elem) => {
-  elem.style.display = 'none';
+  elem.style.display = 'none'; // Hide the element
 };
 
 const showElement = (elem) => {
-  elem.style.display = '';
+  elem.style.display = ''; // Show the element
 };
 
-// Get current URL
 const getURL = () => {
   return new Promise((resolve, reject) => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -37,6 +53,7 @@ const fetchAndProcessURL = async () => {
         if (chrome.runtime.lastError) {
           console.error(chrome.runtime.lastError);
           tajukElement.innerText = "Error extracting text.";
+          hideLoadingBar();
           return;
         }
 
@@ -52,24 +69,40 @@ const fetchAndProcessURL = async () => {
             if (response.error) {
               tajukElement.innerText = "Error: " + response.error;
             } else {
-              const result = response.data; // Store response data
+              const result = response.data;
+              imageElement.style.width = "100px"; // Set the width of the image (you can change the value)
+              imageElement.style.height = "100px";
               tajukElement.innerHTML = `
+                  <p><strong>Our Prediction</p></strong>
                   <p><strong>URL Prediction:</strong> ${result.url_prediction}</p>
                   <p><strong>Text Prediction:</strong> ${result.text_prediction}</p>
                   <p><strong>VirusTotal Report:</strong> ${result.report_result.message}</p>
               `;
+              // Replace logo based on the result
+              if (result.url_prediction === "Safe" && result.text_prediction === "Safe") {
+                imageElement.src = "../images/safe.png"; // Safe logo image
+              } else if (result.url_prediction === "harmful" || result.text_prediction === "safe") { 
+                imageElement.src = "../images/cautios.png"; // Safe logo image
+              }
+              else {
+                imageElement.src = "../images/harmful.png"; // Unsafe logo image
+              }
             }
-
             // Re-enable the button after response
             checkSafetyElement.disabled = false;
             checkSafetyElement.innerText = "Check Again";
             showElement(checkSafetyElement);
+            showElement(containerElement);
+
+            // Hide the loading bar when done
+            hideLoadingBar();
           }
         );
       }
     );
   } catch (err) {
     tajukElement.innerText = "Error fetching URL.";
+    hideLoadingBar(); // Hide loading bar on error
   }
 };
 
@@ -83,7 +116,7 @@ const getCurrentTab = async () => {
 // Function to scrape content from page
 function scrapeContentFromPage(){
   
-  //Parse contents from the HTML page
+  // Parse contents from the HTML page
   let pageText = document.body.innerText;
   let currentURL = window.location.href;
 
@@ -91,22 +124,31 @@ function scrapeContentFromPage(){
   chrome.runtime.sendMessage({type: "scrapedData", pageText, url: currentURL});
 }
 
-//Button event
+// Button event
 checkSafetyElement.onclick = async() => {
-  console.log("Button clicked");
 
-  // Hide the button while loading
-  hideElement(checkSafetyElement);
+  // Show the loading bar and start the progress
+  showLoadingBar(); 
 
-  // Call the function to fetch and process the URL
-  fetchAndProcessURL();
+  // Simulate a long process with setInterval to update the progress
+  let progress = 0;
+  const interval = setInterval(() => {
+    progress += 10;
+    updateLoadingBar(progress);
+    if (progress >= 100) {
+      clearInterval(interval);
+    }
+  }, 500);
+
+  checkSafetyElement.innerText = "Processing...";
 
   // Get current active tab
-  let [tab] = await chrome.tabs.query({active: true, currentWindow: true})
+  let [tab] = await chrome.tabs.query({active: true, currentWindow: true});
 
-  // Execute script to parse emails on page
+  fetchAndProcessURL();
+
   chrome.scripting.executeScript({
     target: {tabId: tab.id},
     func: scrapeContentFromPage,
-  })
+  });
 };
