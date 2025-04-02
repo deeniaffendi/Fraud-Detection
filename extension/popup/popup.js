@@ -52,7 +52,12 @@ const fetchAndProcessURL = async () => {
             if (response.error) {
               tajukElement.innerText = "Error: " + response.error;
             } else {
-              tajukElement.innerText = response.data.message || "Scan Completed!";
+              const result = response.data; // Store response data
+              tajukElement.innerHTML = `
+                  <p><strong>URL Prediction:</strong> ${result.url_prediction}</p>
+                  <p><strong>Text Prediction:</strong> ${result.text_prediction}</p>
+                  <p><strong>VirusTotal Report:</strong> ${result.report_result.message}</p>
+              `;
             }
 
             // Re-enable the button after response

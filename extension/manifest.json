@@ -6,7 +6,7 @@
         "default_popup": "popup/popup.html"
     },
     "icons":{
-        "16":"images/icon-16.jpg"
+        "16":"images/logo.png"
     },
     "background":{
         "service_worker": "background.js"
