@@ -69,19 +69,26 @@ const fetchAndProcessURL = async () => {
             if (response.error) {
               tajukElement.innerText = "Error: " + response.error;
             } else {
+              showElement(imageElement)
               const result = response.data;
-              imageElement.style.width = "100px"; // Set the width of the image (you can change the value)
+              imageElement.style.width = "100px";
               imageElement.style.height = "100px";
+
+              const reportMessage = typeof result.report_result === "string" 
+                ? result.report_result 
+                : result.report_result.message;
               tajukElement.innerHTML = `
                   <p><strong>Our Prediction</p></strong>
                   <p><strong>URL Prediction:</strong> ${result.url_prediction}</p>
                   <p><strong>Text Prediction:</strong> ${result.text_prediction}</p>
-                  <p><strong>VirusTotal Report:</strong> ${result.report_result.message}</p>
+                  <p><strong>VirusTotal Report:</strong> ${reportMessage}</p>
               `;
               // Replace logo based on the result
               if (result.url_prediction === "Safe" && result.text_prediction === "Safe") {
                 imageElement.src = "../images/safe.png"; // Safe logo image
-              } else if (result.url_prediction === "harmful" || result.text_prediction === "safe") { 
+              } else if (result.url_prediction === "Harmful" && result.text_prediction === "Safe") { 
+                imageElement.src = "../images/cautios.png"; // Safe logo image
+              } else if (result.url_prediction === "Safe" && result.text_prediction === "Harmful") { 
                 imageElement.src = "../images/cautios.png"; // Safe logo image
               }
               else {
@@ -140,7 +147,9 @@ checkSafetyElement.onclick = async() => {
     }
   }, 500);
 
-  checkSafetyElement.innerText = "Processing...";
+  hideElement(imageElement)
+  hideElement(checkSafetyElement)
+  tajukElement.innerText = "Processing...";
 
   // Get current active tab
   let [tab] = await chrome.tabs.query({active: true, currentWindow: true});

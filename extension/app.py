@@ -116,7 +116,6 @@ def predict(content):
 
 @app.route('/scan', methods=['POST'])
 def scan():
-    
     try:
         data = request.json
         url = data.get("url")
@@ -129,20 +128,20 @@ def scan():
 
         scan_result = scan_url(url)
 
-        if scan_result.get("status_code") == 404:
-            return jsonify({"message": "Unable to scan website. URL not found in VirusTotal database."}), 404
-
-        if 'data' not in scan_result:
-            return jsonify(scan_result), 400
-
         url_prediction = predict(url)
         text_prediction = predict(new_text)
-        result = report_result(scan_result, url).get_json()
+
+        # Default report_result message in case of 404
+        result = "URL does not exist in VirusTotal's database"
+
+        # If scan_result contains 'data', process it
+        if "data" in scan_result:
+            result = report_result(scan_result, url).get_json()
 
         return jsonify({
-            "url_prediction" : url_prediction,
-            "text_prediction" : text_prediction,
-            "report_result" : result
+            "url_prediction": url_prediction,
+            "text_prediction": text_prediction,
+            "report_result": result
         })
 
     except Exception as e:
