@@ -20,31 +20,31 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    if (changeInfo.status === 'complete') {
-        startBlinkingIcon();
-    }
-});
+// chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+//     if (changeInfo.status === 'complete') {
+//         startBlinkingIcon();
+//     }
+// });
 
-let isBlinking = false;
-let blinkInterval;
+// let isBlinking = false;
+// let blinkInterval;
 
-function startBlinkingIcon() {
-    if (isBlinking) return; // Prevent multiple intervals
+// function startBlinkingIcon() {
+//     if (isBlinking) return; // Prevent multiple intervals
 
-    isBlinking = true;
-    blinkInterval = setInterval(() => {
-        let newIcon = isBlinking ? { path: "images/safe.png" } : { path: "images/1.png" }; // Alternate between two icons
-        chrome.action.setIcon(newIcon);
-        isBlinking = !isBlinking; // Toggle the blinking state
-    }, 100); // Blink every 500ms
-}
+//     isBlinking = true;
+//     blinkInterval = setInterval(() => {
+//         let newIcon = isBlinking ? { path: "images/safe.png" } : { path: "images/1.png" }; // Alternate between two icons
+//         chrome.action.setIcon(newIcon);
+//         isBlinking = !isBlinking; // Toggle the blinking state
+//     }, 100); // Blink every 500ms
+// }
 
-function stopBlinkingIcon() {
-    clearInterval(blinkInterval);
-    isBlinking = false;
-    chrome.action.setIcon({ path: "images/2.png" }); // Reset to normal icon
-}
+// function stopBlinkingIcon() {
+//     clearInterval(blinkInterval);
+//     isBlinking = false;
+//     chrome.action.setIcon({ path: "images/2.png" }); // Reset to normal icon
+// }
 
-// Stop blinking after some time or based on conditions
-setTimeout(() => stopBlinkingIcon(), 5000); // Example: Stop after 5 seconds
+// // Stop blinking after some time or based on conditions
+// setTimeout(() => stopBlinkingIcon(), 5000); // Example: Stop after 5 seconds

@@ -84,11 +84,11 @@ const fetchAndProcessURL = async () => {
                   <p><strong>VirusTotal Report:</strong> ${reportMessage}</p>
               `;
               // Replace logo based on the result
-              if (result.url_prediction === "Safe" && result.text_prediction === "Safe") {
+              if (result.url_prediction === "safe" && result.text_prediction === "safe") {
                 imageElement.src = "../images/safe.png"; // Safe logo image
-              } else if (result.url_prediction === "Harmful" && result.text_prediction === "Safe") { 
+              } else if (result.url_prediction === "harmful" || result.text_prediction === "safe") { 
                 imageElement.src = "../images/cautios.png"; // Safe logo image
-              } else if (result.url_prediction === "Safe" && result.text_prediction === "Harmful") { 
+              } else if (result.url_prediction === "safe" || result.text_prediction === "harmful") { 
                 imageElement.src = "../images/cautios.png"; // Safe logo image
               }
               else {
