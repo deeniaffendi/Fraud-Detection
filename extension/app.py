@@ -57,29 +57,33 @@ def report_result(scan_result, url):
     flagged_results = []
     flagged_engines = []
 
-    for engine, result in analysis_results.items():
+    harmful_flags = ['phishing', 'malware', 'malicious']
 
+    # Check the scan result from all engines
+    for engine, result in analysis_results.items():
         result_value = result.get('result')
         if result_value:
             result_counts[result_value] = result_counts.get(result_value, 0) + 1
 
-        if result_value in ['phishing', 'malware'] or result.get('category') == 'malicious':
+        if result_value in harmful_flags or result.get('category') == 'malicious':
             flagged_results.append(result_value)
             flagged_engines.append(engine)
 
-    message = f"The URL {url} was scanned on VirusTotal, analyzed by {len(analysis_results)} engines.\n"
+    # Determine if the URL is harmful or safe based on flagged results
+    url_status = "safe"  # Default to safe
+    if any(flag in harmful_flags for flag in flagged_results):
+        url_status = "harmful"
 
+    message = f"The URL was scanned on VirusTotal by {len(analysis_results)} engines.\n"
+
+    # Provide message about the flagged results and engines
     if flagged_results:
         message += f"The URL was flagged as {', '.join(set(flagged_results))} by {len(flagged_results)} engines: {', '.join(flagged_engines)}.\n"
     else:
         message += "No phishing, malware, or malicious activity detected.\n"
 
-    if result_counts:
-        message += "\nResult counts:\n"
-        for result_value, count in result_counts.items():
-            message += f"{result_value}: {count}\n"
+    return jsonify({"message": message, "status": url_status})
 
-    return jsonify({"message": message})
 
 # Function to get analysis using the ID returned from the scan
 def get_analysis(id):
@@ -112,6 +116,8 @@ def predict(content):
 
     decision_predicted_class = label_encoder.inverse_transform(decision_prediction)
 
+    # probability = clf.predict_proba(text_transformed)
+
     return decision_predicted_class[0]
 
 @app.route('/scan', methods=['POST'])
@@ -141,7 +147,8 @@ def scan():
         return jsonify({
             "url_prediction": url_prediction,
             "text_prediction": text_prediction,
-            "report_result": result
+            "report_result": result,
+            "virustotal_result": result["status"]
         })
 
     except Exception as e:

@@ -1,5 +1,6 @@
 const checkSafetyElement = document.getElementById("checkSafety");
 const tajukElement = document.getElementById("tajuk");
+const callToActionEelement = document.getElementById("callToAction");
 const containerElement = document.querySelector(".container");
 const imageElement = document.getElementById("logo"); 
 const loadingContainer = document.getElementById("loadingContainer"); // Added for the loading container
@@ -71,6 +72,19 @@ const fetchAndProcessURL = async () => {
             } else {
               showElement(imageElement)
               const result = response.data;
+              const textPredictionWeight = 0.6;
+              const urlPredictionWeight = 0.4;
+
+              // Convert predictions to a numerical value (e.g., 1 for harmful, 0 for safe)
+              const urlPredictionValue = result.url_prediction === "safe" ? 0 : 1;
+              const textPredictionValue = result.text_prediction === "safe" ? 0 : 1;
+
+              // Calculate the weighted average score for safety
+              const weightedScore = (urlPredictionValue * urlPredictionWeight) + (textPredictionValue * textPredictionWeight);
+
+              // Determine the final output based on weighted score
+              const finalPrediction = weightedScore >= 0.5 ? "harmful" : "safe" ;
+
               imageElement.style.width = "100px";
               imageElement.style.height = "100px";
 
@@ -78,21 +92,23 @@ const fetchAndProcessURL = async () => {
                 ? result.report_result 
                 : result.report_result.message;
               tajukElement.innerHTML = `
-                  <p><strong>Our Prediction</p></strong>
+                  <p><strong>Our Prediction: ${finalPrediction}</p></strong>
+                  <p><strong>VirusTotal Report: ${result.virustotal_result}</p></strong>
+                  <p>Here's Why</p>
                   <p><strong>URL Prediction:</strong> ${result.url_prediction}</p>
                   <p><strong>Text Prediction:</strong> ${result.text_prediction}</p>
                   <p><strong>VirusTotal Report:</strong> ${reportMessage}</p>
               `;
               // Replace logo based on the result
-              if (result.url_prediction === "safe" && result.text_prediction === "safe") {
-                imageElement.src = "../images/safe.png"; // Safe logo image
-              } else if (result.url_prediction === "harmful" || result.text_prediction === "safe") { 
-                imageElement.src = "../images/cautios.png"; // Safe logo image
-              } else if (result.url_prediction === "safe" || result.text_prediction === "harmful") { 
-                imageElement.src = "../images/cautios.png"; // Safe logo image
-              }
-              else {
-                imageElement.src = "../images/harmful.png"; // Unsafe logo image
+              if (finalPrediction === "safe" && result.virustotal_result === "safe") {
+                imageElement.src = "../images/safe.png"; // Totally safe
+                callToActionEelement.innerHTML = `<p>No malicious activity detected</p>`
+              } else if (finalPrediction === "harmful" && result.virustotal_result === "harmful") {
+                imageElement.src = "../images/harmful.png"; // Totally harmful
+                callToActionEelement.innerHTML = `<p>We predict that this website is harmful be careful of clicking on any links</p>`
+              } else {
+                imageElement.src = "../images/cautios.png"; // Mixed result
+                callToActionEelement.innerHTML = `<p>Be cautious of this website, it my contain malicous activity</p>`
               }
             }
             // Re-enable the button after response
@@ -161,3 +177,8 @@ checkSafetyElement.onclick = async() => {
     func: scrapeContentFromPage,
   });
 };
+
+{/* <p><strong>Our Prediction</p></strong>
+<p><strong>URL Prediction:</strong> ${result.url_prediction}</p>
+<p><strong>Text Prediction:</strong> ${result.text_prediction}</p>
+<p><strong>VirusTotal Report:</strong> ${reportMessage}</p> */}

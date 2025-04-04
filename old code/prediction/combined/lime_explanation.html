@@ -37089,25 +37089,25 @@
 /***/ })
 /******/ ]);
 //# sourceMappingURL=bundle.js.map </script></head><body>
-        <div class="lime top_div" id="top_div06GD5T37CH8ON6D"></div>
+        <div class="lime top_div" id="top_div6EKTKKOQ1Y1ODWS"></div>
         
         <script>
-        var top_div = d3.select('#top_div06GD5T37CH8ON6D').classed('lime top_div', true);
+        var top_div = d3.select('#top_div6EKTKKOQ1Y1ODWS').classed('lime top_div', true);
         
             var pp_div = top_div.append('div')
                                 .classed('lime predict_proba', true);
             var pp_svg = pp_div.append('svg').style('width', '100%');
-            var pp = new lime.PredictProba(pp_svg, ["harmful", "safe"], [0.3642045552583471, 0.6357954447416527]);
+            var pp = new lime.PredictProba(pp_svg, ["harmful", "safe"], [0.3553595791915458, 0.6446404208084543]);
             
         
         var exp_div;
             var exp = new lime.Explanation(["harmful", "safe"]);
         
                 exp_div = top_div.append('div').classed('lime explanation', true);
-                exp.show([["http", -0.6608556541348699], ["com", 0.2115929365023572], ["fb", 0.11622028839957436], ["2F", 0.11123366571948609], ["3A", 0.0822187625274277], ["login", 0.06463186749733538], ["4A", 0.023612416122555106], ["next", -0.013879796596505197], ["fbn", -0.007225334116935225], ["286800", -0.002781476954063989]], 1, exp_div);
+                exp.show([["http", -0.6356678363959894], ["com", 0.21493271206731976], ["fb", 0.11665207978809737], ["2F", 0.11503741867683777], ["3A", 0.08147027092130033], ["login", 0.07746462053158411], ["4A", 0.02213421724500957], ["next", -0.017203352002463413], ["fbsacc", -0.011773944126641752], ["userid", -0.005996027830234927]], 1, exp_div);
                 
         var raw_div = top_div.append('div');
-            exp.show_raw_text([["http", 0, -0.6608556541348699], ["http", 68, -0.6608556541348699], ["com", 10, 0.2115929365023572], ["com", 50, 0.2115929365023572], ["com", 88, 0.2115929365023572], ["fb", 7, 0.11622028839957436], ["fb", 85, 0.11622028839957436], ["2F", 76, 0.11123366571948609], ["2F", 100, 0.11123366571948609], ["3A", 73, 0.0822187625274277], ["3A", 103, 0.0822187625274277], ["login", 23, 0.06463186749733538], ["4A", 106, 0.023612416122555106], ["next", 63, -0.013879796596505197], ["fbn", 58, -0.007225334116935225], ["286800", 36, -0.002781476954063989]], 1, "http://fb.com.accounts.login.userid.286800.fbsacc.com/frd/fbn/?next=http%3A%2F%2Fwww.fb.com%2videos%2F%3A%4A%4ID%1A", raw_div, true);
+            exp.show_raw_text([["http", 0, -0.6356678363959894], ["http", 68, -0.6356678363959894], ["com", 10, 0.21493271206731976], ["com", 50, 0.21493271206731976], ["com", 88, 0.21493271206731976], ["fb", 7, 0.11665207978809737], ["fb", 85, 0.11665207978809737], ["2F", 76, 0.11503741867683777], ["2F", 100, 0.11503741867683777], ["3A", 73, 0.08147027092130033], ["3A", 103, 0.08147027092130033], ["login", 23, 0.07746462053158411], ["4A", 106, 0.02213421724500957], ["next", 63, -0.017203352002463413], ["fbsacc", 43, -0.011773944126641752], ["userid", 29, -0.005996027830234927]], 1, "http://fb.com.accounts.login.userid.286800.fbsacc.com/frd/fbn/?next=http%3A%2F%2Fwww.fb.com%2videos%2F%3A%4A%4ID%1A", raw_div, true);
             
         </script>
         </body></html>
