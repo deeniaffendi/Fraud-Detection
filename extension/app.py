@@ -145,6 +145,8 @@ def scan():
             result = report_result(scan_result, url).get_json()
 
         return jsonify({
+            "url" : url,
+            "text" : new_text,
             "url_prediction": url_prediction,
             "text_prediction": text_prediction,
             "report_result": result,

@@ -3,25 +3,28 @@ const tajukElement = document.getElementById("tajuk");
 const callToActionEelement = document.getElementById("callToAction");
 const containerElement = document.querySelector(".container");
 const imageElement = document.getElementById("logo"); 
-const loadingContainer = document.getElementById("loadingContainer"); // Added for the loading container
+const loadingContainer = document.getElementById("loadingContainer"); 
 const loadingBar = document.getElementById("loadingBar");
+const analysedElement = document.getElementById("analysed");
 
 const showLoadingBar = () => {
-  loadingContainer.style.display = 'block'; // Show the loading bar container
-  loadingBar.style.width = '0%'; // Reset the width before starting
+  loadingContainer.style.display = 'block'; 
+  loadingBar.style.width = '0%';
 };
 
 const updateLoadingBar = (progress) => {
-  loadingBar.style.width = `${progress}%`; // Update the loading bar width
+  loadingBar.style.width = `${progress}%`; 
 };
 
 const hideLoadingBar = () => {
-  loadingContainer.style.display = 'none'; // Hide the loading bar when done
+  loadingContainer.style.display = 'none'; 
 };
 
 const hideElement = (elem) => {
   elem.style.display = 'none'; // Hide the element
 };
+
+hideElement(callToActionEelement)
 
 const showElement = (elem) => {
   elem.style.display = ''; // Show the element
@@ -41,7 +44,7 @@ const getURL = () => {
 
 const fetchAndProcessURL = async () => {
   try {
-    const url = await getURL(); // Get current tab URL
+    const url = await getURL()
     console.log("URL fetched:", url);
 
     // Inject script into the active tab to extract text
@@ -71,7 +74,9 @@ const fetchAndProcessURL = async () => {
               tajukElement.innerText = "Error: " + response.error;
             } else {
               showElement(imageElement)
+              showElement(callToActionEelement)
               const result = response.data;
+              analysedElement.innerHTML =  `<p>This ${result.url} was analysed</p>`
               const textPredictionWeight = 0.6;
               const urlPredictionWeight = 0.4;
 
@@ -93,10 +98,10 @@ const fetchAndProcessURL = async () => {
                 : result.report_result.message;
               tajukElement.innerHTML = `
                   <p><strong>Our Prediction: ${finalPrediction}</p></strong>
-                  <p><strong>VirusTotal Report: ${result.virustotal_result}</p></strong>
-                  <p>Here's Why</p>
-                  <p><strong>URL Prediction:</strong> ${result.url_prediction}</p>
-                  <p><strong>Text Prediction:</strong> ${result.text_prediction}</p>
+                  <p><strong>VirusTotal Prediction: ${result.virustotal_result}</p></strong>
+                  <p>Model Prediction</p>
+                  <p><strong>URL Prediction:</strong>${result.url_prediction}</p>
+                  <p><strong>Text Prediction:</strong> ${result.text_prediction}
                   <p><strong>VirusTotal Report:</strong> ${reportMessage}</p>
               `;
               // Replace logo based on the result
@@ -108,16 +113,14 @@ const fetchAndProcessURL = async () => {
                 callToActionEelement.innerHTML = `<p>We predict that this website is harmful be careful of clicking on any links</p>`
               } else {
                 imageElement.src = "../images/cautios.png"; // Mixed result
-                callToActionEelement.innerHTML = `<p>Be cautious of this website, it my contain malicous activity</p>`
+                callToActionEelement.innerHTML = `<p>Be cautious of this website, it may contain malicous activity</p>`
               }
             }
-            // Re-enable the button after response
-            checkSafetyElement.disabled = false;
-            checkSafetyElement.innerText = "Check Again";
-            showElement(checkSafetyElement);
+            // // Re-enable the button after response
+            // checkSafetyElement.disabled = false;
+            // checkSafetyElement.innerText = "Check Again";
+            // showElement(checkSafetyElement);
             showElement(containerElement);
-
-            // Hide the loading bar when done
             hideLoadingBar();
           }
         );
