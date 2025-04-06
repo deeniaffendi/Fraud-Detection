@@ -20,31 +20,25 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   }
 });
 
-// chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-//     if (changeInfo.status === 'complete') {
-//         startBlinkingIcon();
-//     }
-// });
+let blinkInterval;
+let blinkState = false;
 
-// let isBlinking = false;
-// let blinkInterval;
+// Listen for tab updates (page load complete)
+chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+  if (changeInfo.status === 'complete') {
+    blinkState = false;  // Ensure initial state is off
+    blinkInterval = setInterval(() => {
+      chrome.action.setIcon({
+        path: blinkState ? "images/1.png" : "images/2.png",
+        tabId: tabId
+      });
+      blinkState = !blinkState;
+    }, 500); // Blink every 500ms
 
-// function startBlinkingIcon() {
-//     if (isBlinking) return; // Prevent multiple intervals
-
-//     isBlinking = true;
-//     blinkInterval = setInterval(() => {
-//         let newIcon = isBlinking ? { path: "images/safe.png" } : { path: "images/1.png" }; // Alternate between two icons
-//         chrome.action.setIcon(newIcon);
-//         isBlinking = !isBlinking; // Toggle the blinking state
-//     }, 100); // Blink every 500ms
-// }
-
-// function stopBlinkingIcon() {
-//     clearInterval(blinkInterval);
-//     isBlinking = false;
-//     chrome.action.setIcon({ path: "images/2.png" }); // Reset to normal icon
-// }
-
-// // Stop blinking after some time or based on conditions
-// setTimeout(() => stopBlinkingIcon(), 5000); // Example: Stop after 5 seconds
+    // Stop blinking after 10 seconds
+    setTimeout(() => {
+      clearInterval(blinkInterval);
+      chrome.action.setIcon({ path: "images/logo.png" });  // Optionally reset the icon
+    }, 10000); // 10 seconds
+  }
+});
