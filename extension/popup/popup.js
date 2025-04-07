@@ -1,11 +1,30 @@
 const checkSafetyElement = document.getElementById("checkSafety");
 const tajukElement = document.getElementById("tajuk");
-const callToActionEelement = document.getElementById("callToAction");
-const containerElement = document.querySelector(".container");
-const imageElement = document.getElementById("logo"); 
+const callToAction = document.getElementById("callToAction");
 const loadingContainer = document.getElementById("loadingContainer"); 
 const loadingBar = document.getElementById("loadingBar");
 const analysedElement = document.getElementById("analysed");
+const urlElement = document.getElementById("url");
+const score = document.getElementById("score");
+const statusElement = document.getElementById("status");
+const analysis = document.getElementById("analysis");
+const virustotal = document.getElementById("virustotal");
+const report = document.getElementById("report");
+
+const landingPage = document.getElementById("landingPage")
+const processPage = document.getElementById("processPage")
+const resultsPage = document.getElementById("resultsPage")
+
+const hideElement = (elem) => {
+  elem.style.display = 'none'; // Hide the element
+};
+
+const showElement = (elem) => {
+  elem.style.display = ''; // Show the element
+};
+
+hideElement(processPage)
+hideElement(resultsPage)
 
 const showLoadingBar = () => {
   loadingContainer.style.display = 'block'; 
@@ -18,16 +37,6 @@ const updateLoadingBar = (progress) => {
 
 const hideLoadingBar = () => {
   loadingContainer.style.display = 'none'; 
-};
-
-const hideElement = (elem) => {
-  elem.style.display = 'none'; // Hide the element
-};
-
-hideElement(callToActionEelement)
-
-const showElement = (elem) => {
-  elem.style.display = ''; // Show the element
 };
 
 const getURL = () => {
@@ -73,55 +82,44 @@ const fetchAndProcessURL = async () => {
             if (response.error) {
               tajukElement.innerText = "Error: " + response.error;
             } else {
-              showElement(imageElement)
-              showElement(callToActionEelement)
               const result = response.data;
-              analysedElement.innerHTML =  `<p>This ${result.url} was analysed</p>`
               const textPredictionWeight = 0.6;
               const urlPredictionWeight = 0.4;
-
-              // Convert predictions to a numerical value (e.g., 1 for harmful, 0 for safe)
               const urlPredictionValue = result.url_prediction === "safe" ? 0 : 1;
-              const textPredictionValue = result.text_prediction === "safe" ? 0 : 1;
-
-              // Calculate the weighted average score for safety
-              const weightedScore = (urlPredictionValue * urlPredictionWeight) + (textPredictionValue * textPredictionWeight);
-
-              // Determine the final output based on weighted score
+              const textPredictionValue = result.text_prediction === "safe" ? 0 : 1;    
+              const weightedScore = (urlPredictionValue * urlPredictionWeight) + (textPredictionValue * textPredictionWeight);              
               const finalPrediction = weightedScore >= 0.5 ? "harmful" : "safe" ;
 
-              imageElement.style.width = "100px";
-              imageElement.style.height = "100px";
+              score.style.width = "100px";
+              score.style.height = "100px";
 
               const reportMessage = typeof result.report_result === "string" 
                 ? result.report_result 
                 : result.report_result.message;
-              tajukElement.innerHTML = `
-                  <p><strong>Our Prediction: ${finalPrediction}</p></strong>
-                  <p><strong>VirusTotal Prediction: ${result.virustotal_result}</p></strong>
-                  <p>Model Prediction</p>
-                  <p><strong>URL Prediction:</strong>${result.url_prediction}</p>
-                  <p><strong>Text Prediction:</strong> ${result.text_prediction}
-                  <p><strong>VirusTotal Report:</strong> ${reportMessage}</p>
-              `;
-              // Replace logo based on the result
+
+              urlElement.innerHTML =  `<p>${result.url}</p>`
+              analysis.innerHTML = `<p>Our Prediction: <strong>${finalPrediction.charAt(0).toUpperCase() + finalPrediction.slice(1)}</strong></p>`;
+              virustotal.innerHTML = `<p>VirusTotal Report: <strong>${result.virustotal_result.charAt(0).toUpperCase() + result.virustotal_result.slice(1)}</strong></p>`;              
+
               if (finalPrediction === "safe" && result.virustotal_result === "safe") {
-                imageElement.src = "../images/safe.png"; // Totally safe
-                callToActionEelement.innerHTML = `<p>No malicious activity detected</p>`
+                score.src = "../images/safe.png"; 
+                statusElement.innerHTML = `<strong style="color: #00c897;">SAFE!</strong>`;
+                callToAction.innerHTML = `<p style="color: #00c897;">No malicious activity detected</p>`;
+                report.innerHTML = `<strong style="color: #00c897;">${reportMessage}</strong> `
               } else if (finalPrediction === "harmful" && result.virustotal_result === "harmful") {
-                imageElement.src = "../images/harmful.png"; // Totally harmful
-                callToActionEelement.innerHTML = `<p>We predict that this website is harmful be careful of clicking on any links</p>`
+                score.src = "../images/harmful.png";
+                statusElement.innerHTML = `<strong style="color: #ea0000;">BEWARE!</strong>`;
+                callToAction.innerHTML = `<p style="color: #ea0000;">This website contains suspicious activities!</p>`;
+                report.innerHTML = `<strong style="color: #ea0000;">${reportMessage}</strong> `
               } else {
-                imageElement.src = "../images/cautios.png"; // Mixed result
-                callToActionEelement.innerHTML = `<p>Be cautious of this website, it may contain malicous activity</p>`
+                score.src = "../images/cautious.png"; 
+                statusElement.innerHTML = `<strong style="color: #ff914d;">CAUTIOUS!</strong>`;
+                callToAction.innerHTML = `<p style="color: #ff914d;">Be cautious of this website, it may contain malicious activity</p>`;
+                report.innerHTML = `<strong style="color: #ff914d;">${reportMessage}</strong> `
               }
             }
-            // // Re-enable the button after response
-            // checkSafetyElement.disabled = false;
-            // checkSafetyElement.innerText = "Check Again";
-            // showElement(checkSafetyElement);
-            showElement(containerElement);
-            hideLoadingBar();
+            hideElement(processPage)
+            showElement(resultsPage);
           }
         );
       }
@@ -153,7 +151,8 @@ function scrapeContentFromPage(){
 // Button event
 checkSafetyElement.onclick = async() => {
 
-  // Show the loading bar and start the progress
+  hideElement(landingPage)
+  showElement(processPage)
   showLoadingBar(); 
 
   // Simulate a long process with setInterval to update the progress
@@ -166,14 +165,12 @@ checkSafetyElement.onclick = async() => {
     }
   }, 500);
 
-  hideElement(imageElement)
-  hideElement(checkSafetyElement)
-  tajukElement.innerText = "Processing...";
-
   // Get current active tab
   let [tab] = await chrome.tabs.query({active: true, currentWindow: true});
 
   fetchAndProcessURL();
+
+  // hideElement(processPage);  
 
   chrome.scripting.executeScript({
     target: {tabId: tab.id},
@@ -181,7 +178,11 @@ checkSafetyElement.onclick = async() => {
   });
 };
 
-{/* <p><strong>Our Prediction</p></strong>
-<p><strong>URL Prediction:</strong> ${result.url_prediction}</p>
-<p><strong>Text Prediction:</strong> ${result.text_prediction}</p>
-<p><strong>VirusTotal Report:</strong> ${reportMessage}</p> */}
+              // tajukElement.innerHTML = `
+              //     <p><strong>Our Prediction: ${finalPrediction}</p></strong>
+              //     <p><strong>VirusTotal Prediction: ${result.virustotal_result}</p></strong>
+              //     <p>Model Prediction</p>
+              //     <p><strong>URL Prediction:</strong>${result.url_prediction}</p>
+              //     <p><strong>Text Prediction:</strong> ${result.text_prediction}
+              //     <p><strong>VirusTotal Report:</strong> ${reportMessage}</p>
+              // `;

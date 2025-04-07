@@ -6,16 +6,32 @@
     <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-    <div class="container m=3">
+    
+    <div id="landingPage">
         <img src="../images/logo.png" id="logo">
-        <p id="analysed"></p>
-        <p id="callToAction"></p>
         <p id="tajuk">Are you sure this website is safe?</p>
         <button id="checkSafety" class="button">Check Site Safety</button>
+    </div>
+
+    <div id="processPage">
+        <p>Analysing Website...</p>
         <div id="loadingContainer" class="loading-container" style="display: none;">
             <div id="loadingBar" class="loading-bar"></div>
         </div>
-    </div> 
+    </div>
+
+    <div id="resultsPage">
+        <p>The URL:</p>
+        <p id="url"></p>
+        <p><strong>Risk Score:</strong></p>
+        <img id="score">
+        <p id="status"></p>
+        <p id="callToAction"></p>
+        <p>View Details Below:</p>
+        <p id="analysis"></p>
+        <p id="virustotal"></p>
+        <p id="report"></p>
+    </div>
 
 </body>
 <script src="popup.js"></script>

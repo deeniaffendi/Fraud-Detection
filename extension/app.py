@@ -44,43 +44,30 @@ def scan_url(url):
         return {"error": "Failed to fetch data from VirusTotal", "status_code": response.status_code}
     
 def report_result(scan_result, url):
-
     scan_id = "u-" + scan_result['data']['id'] + '-' + str(scan_result['data']['attributes']['last_analysis_date'])
     print(f"Scan ID extracted: {scan_id}")
 
     analysis_result = get_analysis(scan_id)
-
     analysis_results = analysis_result.get('data', {}).get('attributes', {}).get('results', {})
-
-    category_counts = {}
-    result_counts = {}
-    flagged_results = []
-    flagged_engines = []
 
     harmful_flags = ['phishing', 'malware', 'malicious']
 
-    # Check the scan result from all engines
+    total_engines = len(analysis_results)
+    flagged_count = 0
+    flagged_engines = []
+
+    # Check each engine's result
     for engine, result in analysis_results.items():
         result_value = result.get('result')
-        if result_value:
-            result_counts[result_value] = result_counts.get(result_value, 0) + 1
-
         if result_value in harmful_flags or result.get('category') == 'malicious':
-            flagged_results.append(result_value)
+            flagged_count += 1
             flagged_engines.append(engine)
 
-    # Determine if the URL is harmful or safe based on flagged results
-    url_status = "safe"  # Default to safe
-    if any(flag in harmful_flags for flag in flagged_results):
-        url_status = "harmful"
+    # Determine the final status
+    url_status = "harmful" if flagged_count > 0 else "safe"
 
-    message = f"The URL was scanned on VirusTotal by {len(analysis_results)} engines.\n"
-
-    # Provide message about the flagged results and engines
-    if flagged_results:
-        message += f"The URL was flagged as {', '.join(set(flagged_results))} by {len(flagged_results)} engines: {', '.join(flagged_engines)}.\n"
-    else:
-        message += "No phishing, malware, or malicious activity detected.\n"
+    # Build the message
+    message = f"{flagged_count}/{total_engines} engines flagged this website as potentially harmful."
 
     return jsonify({"message": message, "status": url_status})
 
