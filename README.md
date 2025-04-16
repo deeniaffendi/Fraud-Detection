@@ -37,7 +37,7 @@ Fraud Detection Tool is a Google Chrome Extension designed to detect the safety 
 3. In such cases, the system provides one prediction instead of two.
 
 **Credits/Acknowledgements**
-1. Anne Kayem
+1. Anne Kayem (Dissertation Supervisor)
 2. VirusTotal = https://www.virustotal.com/gui/home/upload
 3. Sklearn Library = https://scikit-learn.org/stable/
 4. MatPlotlib = https://matplotlib.org/
