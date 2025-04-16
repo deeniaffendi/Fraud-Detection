@@ -23,7 +23,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 let blinkInterval;
 let blinkState = false;
 
-// Listen for tab updates (page load complete)
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.status === 'complete') {
     blinkState = false;  // Ensure initial state is off

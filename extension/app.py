@@ -103,8 +103,6 @@ def predict(content):
 
     decision_predicted_class = label_encoder.inverse_transform(decision_prediction)
 
-    # probability = clf.predict_proba(text_transformed)
-
     return decision_predicted_class[0]
 
 @app.route('/scan', methods=['POST'])
@@ -125,7 +123,10 @@ def scan():
         text_prediction = predict(new_text)
 
         # Default report_result message in case of 404
-        result = "URL does not exist in VirusTotal's database"
+        result = {
+            "message": "URL does not exist in VirusTotal's database",
+            "status": "unknown"
+        }
 
         # If scan_result contains 'data', process it
         if "data" in scan_result:

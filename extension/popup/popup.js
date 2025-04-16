@@ -92,7 +92,7 @@ const fetchAndProcessURL = async () => {
 
               score.style.width = "100px";
               score.style.height = "100px";
-
+              
               const reportMessage = typeof result.report_result === "string" 
                 ? result.report_result 
                 : result.report_result.message;
@@ -106,7 +106,7 @@ const fetchAndProcessURL = async () => {
                 statusElement.innerHTML = `<strong style="color: #00c897;">SAFE!</strong>`;
                 callToAction.innerHTML = `<p style="color: #00c897;">No malicious activity detected</p>`;
                 report.innerHTML = `<strong style="color: #00c897;">${reportMessage}</strong> `
-              } else if (finalPrediction === "harmful" && result.virustotal_result === "harmful") {
+              } else if (finalPrediction === "harmful" && result.virustotal_result === "unknown" ||finalPrediction === "harmful" && result.virustotal_result === "harmful") {
                 score.src = "../images/harmful.png";
                 statusElement.innerHTML = `<strong style="color: #ea0000;">BEWARE!</strong>`;
                 callToAction.innerHTML = `<p style="color: #ea0000;">This website contains suspicious activities!</p>`;
@@ -125,8 +125,8 @@ const fetchAndProcessURL = async () => {
       }
     );
   } catch (err) {
-    tajukElement.innerText = "Error fetching URL.";
-    hideLoadingBar(); // Hide loading bar on error
+    callToAction.innerText = "This website is private unable to analyse.";
+    hideLoadingBar();
   }
 };
 
@@ -170,19 +170,8 @@ checkSafetyElement.onclick = async() => {
 
   fetchAndProcessURL();
 
-  // hideElement(processPage);  
-
   chrome.scripting.executeScript({
     target: {tabId: tab.id},
     func: scrapeContentFromPage,
   });
 };
-
-              // tajukElement.innerHTML = `
-              //     <p><strong>Our Prediction: ${finalPrediction}</p></strong>
-              //     <p><strong>VirusTotal Prediction: ${result.virustotal_result}</p></strong>
-              //     <p>Model Prediction</p>
-              //     <p><strong>URL Prediction:</strong>${result.url_prediction}</p>
-              //     <p><strong>Text Prediction:</strong> ${result.text_prediction}
-              //     <p><strong>VirusTotal Report:</strong> ${reportMessage}</p>
-              // `;
