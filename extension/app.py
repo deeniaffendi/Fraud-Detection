@@ -7,11 +7,14 @@ import re
 import string
 from sklearn.preprocessing import LabelEncoder
 from sklearn.feature_extraction.text import TfidfVectorizer
+import os
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS
 
-api_key = "f3d96da5d258d0b8f0c6e699e73e4268f626a5749fea1e8ea763612394fb71a7"
+KEY  = os.environ["KEY"]
+
+# api_key = "f3d96da5d258d0b8f0c6e699e73e4268f626a5749fea1e8ea763612394fb71a7"
 
 url_scan = "https://www.virustotal.com/api/v3/urls"
 url_analysis = "https://www.virustotal.com/api/v3/analyses"
@@ -27,7 +30,7 @@ def scan_url(url):
     print(f"Encoded URL: {url_encoded}")  # Debugging log to check URL encoding
 
     headers = {
-        "x-apikey": api_key
+        "x-apikey": KEY
     }
 
     response = requests.get(f"{url_scan}/{url_encoded}", headers=headers)
@@ -77,7 +80,7 @@ def get_analysis(id):
     print(f"Fetching analysis for ID: {id}") 
 
     headers = {
-        "x-apikey": api_key
+        "x-apikey": KEY
     }
 
     response = requests.get(f"{url_analysis}/{id}", headers=headers)
