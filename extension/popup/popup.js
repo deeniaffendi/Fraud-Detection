@@ -83,8 +83,8 @@ const fetchAndProcessURL = async () => {
               tajukElement.innerText = "Error: " + response.error;
             } else {
               const result = response.data;
-              const textPredictionWeight = 0.6;
-              const urlPredictionWeight = 0.4;
+              const textPredictionWeight = 0.7;
+              const urlPredictionWeight = 0.3;
               const urlPredictionValue = result.url_prediction === "safe" ? 0 : 1;
               const textPredictionValue = result.text_prediction === "safe" ? 0 : 1;    
               const weightedScore = (urlPredictionValue * urlPredictionWeight) + (textPredictionValue * textPredictionWeight);              

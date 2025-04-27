@@ -10,11 +10,9 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 import os
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS
+CORS(app)
 
 KEY  = os.environ["KEY"]
-
-# api_key = "f3d96da5d258d0b8f0c6e699e73e4268f626a5749fea1e8ea763612394fb71a7"
 
 url_scan = "https://www.virustotal.com/api/v3/urls"
 url_analysis = "https://www.virustotal.com/api/v3/analyses"

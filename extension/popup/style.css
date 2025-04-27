@@ -84,8 +84,8 @@ p {
 #resultsPage {
     color: #86c9f3;
     width: auto;
-    max-width: 100%; /* Prevents the width from going beyond the container's width */
-    overflow-wrap: break-word; /* Allows long words to break and wrap onto the next line */
+    max-width: 100%; 
+    overflow-wrap: break-word;
 }
 
 #resultsPage p {
