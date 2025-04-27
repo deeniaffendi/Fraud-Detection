@@ -17,9 +17,9 @@ KEY  = os.environ["KEY"]
 url_scan = "https://www.virustotal.com/api/v3/urls"
 url_analysis = "https://www.virustotal.com/api/v3/analyses"
 
-clf = joblib.load("model/model.pkl")
-vectorizer = joblib.load("model/vectorizer.pkl")
-label_encoder = joblib.load("model/label_encoder.pkl")
+clf = joblib.load("model/model1.pkl")
+vectorizer = joblib.load("model/vectorizer1.pkl")
+label_encoder = joblib.load("model/label_encoder1.pkl")
 
 # Function to scan a URL using VirusTotal API
 def scan_url(url):
