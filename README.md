@@ -45,3 +45,4 @@ Fraud Detection Tool is a Google Chrome Extension designed to detect the safety 
 **Contact**
 For any questions or collaboration inquiries, feel free to reach out:
 ndb205@exeter.ac.uk
+GitHub Link: https://github.com/deeniaffendi/Fraud-Detection
