@@ -43,4 +43,3 @@ VirusTotal only works on publicly accessible websites. If the website is private
 **Contact**
 For any questions or collaboration inquiries, feel free to reach out:
 ndb205@exeter.ac.uk
-GitHub Link: https://github.com/deeniaffendi/Fraud-Detection
