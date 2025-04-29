@@ -3,36 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Safety Checker</title>
+    <!-- Link to external CSS for styling -->
     <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
     
+    <!-- Landing Page: Shown when the popup opens -->
     <div id="landingPage">
-        <img src="../images/logo.png" id="logo">
+        <img src="../images/logo.png" id="logo" alt="Extension Logo">
         <p id="tajuk">Are you sure this website is safe?</p>
         <button id="checkSafety" class="button">Check Site Safety</button>
     </div>
 
-    <div id="processPage">
+    <!-- Process Page: Displayed while scanning/analyzing -->
+    <div id="processPage" style="display: none;">
         <p>Analysing Website...</p>
-        <div id="loadingContainer" class="loading-container" style="display: none;">
+        <div id="loadingContainer" class="loading-container">
             <div id="loadingBar" class="loading-bar"></div>
         </div>
     </div>
 
-    <div id="resultsPage">
-        <p>The URL:</p>
+    <!-- Results Page: Shown after analysis is complete -->
+    <div id="resultsPage" style="display: none;">
+        <p><strong>The URL:</strong></p>
         <p id="url"></p>
+
         <p><strong>Risk Score:</strong></p>
-        <img id="score">
-        <p id="status"></p>
-        <p id="callToAction"></p>
-        <p>View Details Below:</p>
+        <img id="score" alt="Risk score image">
+
+        <p id="status" class="status-text"></p>
+        <p id="callToAction" class="cta-text"></p>
+
+        <p><strong>View Details Below:</strong></p>
         <p id="analysis"></p>
         <p id="virustotal"></p>
         <p id="report"></p>
     </div>
 
+    <script src="popup.js"></script>
 </body>
-<script src="popup.js"></script>
 </html>
